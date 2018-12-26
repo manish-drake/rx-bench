@@ -11,17 +11,13 @@ Rectangle {
             placeholderText: qsTr("Pattern")
             anchors.leftMargin: 0
             Layout.fillWidth: true
+            text: rx.pattern
             Keys.onReturnPressed: rx.run();
         }
         Binding {
             target: rx
             property: 'pattern'
             value: txtPattern.text
-        }
-        Binding {
-            target: txtPattern
-            property: 'text'
-            value: rx.pattern
         }
 
         Rectangle {
@@ -35,13 +31,12 @@ Rectangle {
                 TextArea.flickable:  TextArea {
                     id: txtInput
                     placeholderText: qsTr("String Input")
-                    text: "Corpus tests allow you to unit test your regular expressions using a typical red/green development flow.\nTest sections are marked indicating if the following lines should (#+) or should not (#-) match the regex pattern. Blank lines are ignored."
                     wrapMode: Text.WordWrap
+                    text: rx.input
                 }
                 ScrollBar.vertical: ScrollBar{ }
             }
         }
-
         Binding {
             target: rx
             property: 'input'
