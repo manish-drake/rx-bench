@@ -2,6 +2,8 @@
 #include <iostream>
 #include <regex>
 #include <string.h>
+#include <fstream>
+
 
 void rxmodel::run()
 {
@@ -23,9 +25,10 @@ void rxmodel::run()
             inputString = matches.suffix().str();
         }
 
-
+        std::cout << mtch << std::endl;
         setResults(QString::fromStdString(mtch));
         emit qresultsChanged();
+        this->writeCache(pattern().toStdString(), input().toStdString());
     }
     catch(std::regex_error ex)
     {
@@ -34,7 +37,58 @@ void rxmodel::run()
 
 }
 
+void rxmodel::writeCache(const std::string &strPattern, const std::string &strInput)
+{
+    const char *pattern = strPattern.c_str();
+    const char *input = strInput.c_str();
+    int szPattern = strlen(pattern);
+    int szInput = strlen(input);
+
+
+    std::ofstream stream(CACHE, std::ios::binary);
+
+    stream.write(reinterpret_cast<const char*>(&szPattern), sizeof(int));
+    stream.write(pattern, szPattern);
+    stream.write(reinterpret_cast<const char*>(&szInput), sizeof(int));
+    stream.write(input, szInput);
+
+    stream.close();
+
+}
+
+int rxmodel::readCache(std::string &strPattern, std::string &strInput)
+{
+    try{
+        std::ifstream istream(CACHE, std::ios::binary);
+        int szPattern, szInput;
+        istream.read(reinterpret_cast<char *>(&szPattern), sizeof(int));
+        char pattern[szPattern + 1] = {};
+        istream.read(pattern, szPattern);
+        istream.read(reinterpret_cast<char *>(&szInput), sizeof(int));
+        char input[szInput + 1] = {};
+        istream.read(input, szInput);
+        istream.close();
+
+        strPattern = std::string(pattern);
+        strInput = std::string(input);
+        return 0;
+    }
+    catch(std::exception)
+    {
+        return 1;
+    }
+}
+
 rxmodel::rxmodel(QObject *parent) : QObject(parent)
 {
-
+    sprintf(CACHE, "%s/rx-bench.cache", getenv("HOME"));
+    const int ERR = 1;
+    std::string pattern, input;
+    if(!(ERR && this->readCache(pattern, input)))
+    {
+        if(pattern.size() > 0)
+            setPattern(QString::fromStdString(pattern));
+        if(input.size() > 0)
+            setInput(QString::fromStdString(input));
+    }
 }

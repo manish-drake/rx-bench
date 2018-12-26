@@ -18,6 +18,11 @@ Rectangle {
             property: 'pattern'
             value: txtPattern.text
         }
+        Binding {
+            target: txtPattern
+            property: 'text'
+            value: rx.pattern
+        }
 
         Rectangle {
             id: name

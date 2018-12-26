@@ -13,9 +13,13 @@ class rxmodel : public QObject
     Q_OBJECT
     QString m_pattern, m_input, m_results;
     QList<QObject*> m_qresults;
+    void writeCache(const std::string &strPattern, const std::string &strInput);
+    int readCache(std::string &strPattern, std::string &strInput);
+    char CACHE[255] = {};
 public:
     explicit rxmodel(QObject *parent = nullptr);
     Q_INVOKABLE void run();
+
     inline QString pattern() const
     {
         return m_pattern;
