@@ -16,7 +16,7 @@ Rectangle {
             RowLayout{
                 Text { text: modelData.pos; Layout.minimumWidth: 40}
                 Text { text: modelData.len; Layout.minimumWidth: 30}
-                Text { text: modelData.result; Layout.fillWidth: parent}
+                TextInput { text: modelData.result; Layout.fillWidth: parent; enabled: false }
             }
 
             MouseArea {
