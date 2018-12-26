@@ -19,6 +19,7 @@ class rxmodel : public QObject
 public:
     explicit rxmodel(QObject *parent = nullptr);
     Q_INVOKABLE void run();
+    Q_INVOKABLE void selectedIndex(const int &index);
 
     inline QString pattern() const
     {
@@ -60,6 +61,7 @@ signals:
     void inputChanged();
     void resultsChanged();
     void qresultsChanged();
+    void select(const int &start, const int &end);
 
 public slots:
 };

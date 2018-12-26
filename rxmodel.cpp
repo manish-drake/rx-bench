@@ -14,15 +14,23 @@ void rxmodel::run()
 
         std::string mtch = "";
         this->m_qresults.clear();
+        int position = 0;
         while(std::regex_search(inputString, matches, rx))
         {
             for(auto &match:matches)
             {
                 mtch.append(match);
                 mtch.append("\n");
-                m_qresults.append(new qresult(QString::fromStdString(match), this));
+                position += matches.position();
+                m_qresults.append(
+                            new qresult(
+                                QString::fromStdString(match),
+                                position,
+                                matches.length(),
+                                this));
             }
             inputString = matches.suffix().str();
+            position += matches.length();
         }
 
         std::cout << mtch << std::endl;
@@ -35,6 +43,12 @@ void rxmodel::run()
         std::cout << ex.what() << std::endl;
     }
 
+}
+
+void rxmodel::selectedIndex(const int &index)
+{
+    auto result = static_cast<qresult*>(m_qresults[index]);
+    this->select(result->pos(), result->pos()+result->len());
 }
 
 void rxmodel::writeCache(const std::string &strPattern, const std::string &strInput)

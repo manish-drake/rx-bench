@@ -42,6 +42,12 @@ Rectangle {
             property: 'input'
             value: txtInput.text
         }
+        Connections{
+            target: rx
+            onSelect:{
+                txtInput.select(start, end);
+            }
+        }
 
         Button {
             id: btnRun
